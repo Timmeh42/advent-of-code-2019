@@ -4,15 +4,29 @@ let [ min, max ] = fs.readFileSync('./input.txt', { encoding: 'utf8', }).split('
 
 console.log(`Range: ${min}(min) - ${max}(max)`);
 
+function checkViable (password) {
+    let pair = false;
+    let digits = {};
+    let prevDigit = 0;
+    while (password > 0) {
+        let digit = password % 10;
+        password = Math.floor(password / 10);
+        if (digits[digit]) {
+            digits[digit] += 1;
+        } else {
+            digits[digit] = 1;
+        }
+    }
+    return Object.values(digits).includes(2);
+}
 
 let passwords = [];
-let viable = /^(?=.{6}$)(\d{0,4}(\d)\2\d{0,4})/;
 
 function password (current) {
     if (current > max) {
         return;
     }
-    if (current >= min && viable.test(current)) {
+    if (current >= min && checkViable(current)) {
         passwords.push(current);
         return;
     }
