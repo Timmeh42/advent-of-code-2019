@@ -2,22 +2,21 @@ const fs = require('fs');
 
 let [ min, max ] = fs.readFileSync('./input.txt', { encoding: 'utf8', }).split('-').map(n => Number.parseInt(n));
 
-console.log(`Range: ${min}(min) - ${max}(max)`);
+let startTime = process.hrtime();
 
 function checkViable (password) {
-    let pair = false;
-    let digits = {};
-    let prevDigit = 0;
-    while (password > 0) {
+    let prevdigit = 0;
+    while (true) {
         let digit = password % 10;
-        password = Math.floor(password / 10);
-        if (digits[digit]) {
-            digits[digit] += 1;
-        } else {
-            digits[digit] = 1;
+        if (digit === prevdigit) {
+            return true;
         }
+        prevdigit = digit;
+        if (password < 10) {
+            return false;
+        }
+        password = Math.floor(password / 10);
     }
-    return Object.values(digits).includes(2);
 }
 
 let passwords = [];
@@ -36,4 +35,5 @@ function password (current) {
     }
 }
 password(0);
+console.log(process.hrtime(startTime));
 console.log(passwords.length);
