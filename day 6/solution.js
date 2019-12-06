@@ -26,36 +26,34 @@ for (let orbit of orbits) {
     tree.get(center).satellites.push(tree.get(satellite));
 }
 
-function treeverse (center, startDepth = 0) {
-    let totalDepth = startDepth;
+function treeverse (center) {
+    let totalDepth = center.depth;
     for (let satellite of center.satellites) {
-        satellite.depth = startDepth + 1;
-        totalDepth += treeverse(satellite, startDepth + 1);
+        satellite.depth = center.depth + 1;
+        totalDepth += treeverse(satellite);
     }
     return totalDepth
 }
 
 function search (center) {
-    let children = [...center.satellites];
-    let descendants = [];
-    console.log(children.length);
+    const children = center.satellites;
+    let descendants = [...children];
     for (let satellite of children) {
-        console.log(satellite.label, [...satellite.satellites]);
         let result = search(satellite);
-        if (typeof result !== 'array') {
+        if (typeof result === 'number') {
             return result;
         }
-        console.log('res ' + result);
-        descendants.push(result);
+        descendants.push(...result);
     }
-    children = [...children, ...descendants];
-    if (children.some(s => s.label === 'YOU') && children.some(s => s.label === 'SAN')) {
-        return children.find(s => s.label === 'YOU').depth + children.find(s => s.label === 'SAN').depth - 2 * center.depth;
+    //console.log(descendants.map(n => n.label).join(' '));
+    if (descendants.some(s => s.label === 'YOU') && descendants.some(s => s.label === 'SAN')) {
+        let distance = descendants.find(s => s.label === 'YOU').depth + descendants.find(s => s.label === 'SAN').depth - 2 * (center.depth + 1);
+        return distance;
     }
-    return [];
+    return descendants;
 }
 
 let startTime = performance.now();
-console.log(treeverse(tree.get('COM')));
-console.log(search(tree.get('COM')));
-console.log(performance.now() - startTime);
+console.log(`total depth: ${treeverse(tree.get('COM'))}`);
+console.log(`distance: ${search(tree.get('COM'))}`);
+console.log(`time: ${performance.now() - startTime}ms`);
