@@ -45,7 +45,6 @@ function search (center) {
         }
         descendants.push(...result);
     }
-    //console.log(descendants.map(n => n.label).join(' '));
     if (descendants.some(s => s.label === 'YOU') && descendants.some(s => s.label === 'SAN')) {
         let distance = descendants.find(s => s.label === 'YOU').depth + descendants.find(s => s.label === 'SAN').depth - 2 * (center.depth + 1);
         return distance;
