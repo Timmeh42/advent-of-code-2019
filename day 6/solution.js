@@ -1,9 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-
-const input = fs.readFileSync(path.resolve(__dirname, './input.txt'), { encoding: 'utf8'});
-
-module.exports = function () {
+module.exports = function ( input ) {
 
     const orbits = input.split(/\r?\n/);
 
@@ -54,9 +49,8 @@ module.exports = function () {
         return descendants;
     }
     
-    let output = [
+    return [
         treeverse(tree.get('COM')),
         search(tree.get('COM')),
-    ]
-    return output;
+    ];
 }

@@ -1,12 +1,7 @@
 "use strict";
-
-const fs = require('fs');
-const path = require('path');
 const { slices, range } = require('../helpers');
 
-module.exports = function () {
-    let output = [];
-    const input = fs.readFileSync(path.resolve(__dirname, './input.txt'), { encoding: 'utf8'}).trim();    
+module.exports = function ( input ) {
     const [ width, height ] = [ 25, 6 ];
     const layerSize = width * height;
     const layerCount = Math.floor(input.length/layerSize);
@@ -23,12 +18,11 @@ module.exports = function () {
         }
     }
     
-    
     pixels = pixels.replace(/1/g, '#').replace(/0/g, ' ');
-    
     const image = slices(pixels, width).join('\n');
     
-    output[0] = fewestZerosLayer[1] * fewestZerosLayer[2];
-    output[1] = image;
-    return output;
+    return [
+        fewestZerosLayer[1] * fewestZerosLayer[2],
+        image,
+    ];
 }
