@@ -21,9 +21,9 @@ const avgTime = (totalTime[0] + totalTime[1] / 1_000_000_000) / runs;
 
 console.log(`
 Part 1:
-${output[0]}
+${output[0] || '[NOT DONE]'}
 Part 2:
-${output[1]}
+${output[1] || '[NOT DONE]'}
 Average runtime:
 ${avgTime * 1000}ms
 `);
