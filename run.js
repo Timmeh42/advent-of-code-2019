@@ -3,7 +3,7 @@ const { range } = require('./helpers');
 
 
 const route = `./day ${process.argv[2]}/solution.js`;
-const runs = parseInt(process.argv[3]) || 1_000;
+const runs = parseInt(process.argv[3]) || 1;
 
 console.log(route);
 const solution = require(route);
