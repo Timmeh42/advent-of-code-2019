@@ -24,3 +24,7 @@ exports.range = function* (a, b = a, s = null) {
         yield x += step;
     }
 }
+
+exports.permutations = function (a) {
+    return a.length ? a.reduce((r, v, i) => [ ...r, ...exports.permutations([ ...a.slice(0, i), ...a.slice(i + 1) ]).map(x => [ v, ...x ])], []) : [[]];
+}
