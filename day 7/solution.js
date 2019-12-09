@@ -165,40 +165,30 @@ module.exports = function ( input ) {
     let part1 = -Infinity;
     let machineCount = 5;
     for (let perm of permutations([...range(machineCount)])) {
-        let inputs = Array(machineCount + 1).fill([]);
+        let inputs = perm.map(n => [n]).concat([[]]);
         let machines = [];
         for (let i = 0; i < machineCount; i++) {
             machines.push(new Machine(input.split(',').map(n => parseInt(n)), inputs[i], inputs[i+1]));
         }
-        inputs[0].push(0);
-        for (let i = 0; i < machineCount; i++) {
-            inputs[i].push(perm[i]);
-            while (machines[i].state !== STATE.PAUSED) {
-                machines[i].run();
-            }
+        inputs[0].unshift(0);
+        for (let machine of machines) {
+            machine.run();
         }
         part1 = Math.max(part1, inputs[machineCount][0]);
     }
 
     let part2 = -Infinity;
     for (let perm of permutations([...range(5, 5 + machineCount)])) {
-        let inputs = [];
-        for (let i = 0; i < machineCount; i++) {
-            inputs.push([]);
-        }
+        let inputs = perm.map(n => [n]).concat([[]]);
         let machines = [];
         for (let i = 0; i < machineCount; i++) {
             machines.push(new Machine(input.split(',').map(n => parseInt(n)), inputs[i], inputs[(i + 1) % machineCount]));
         }
-        inputs[0].push(0);
-        inputs.forEach((e, i) => e.push(perm[i]));
+        inputs[0].unshift(0);
         let i = 0;
         while (true) {
-            machines[i].state = STATE.RUNNING;
-            while (machines[i].state === STATE.RUNNING) {
-                machines[i].run();
-            }
-            if (machines[machineCount - 1].state === STATE.COMPLETE) {
+            let res = machines[i].run();
+            if (res === STATE.COMPLETE && i === machineCount-1) {
                 break;
             }
             i = (i + 1) % machineCount;
