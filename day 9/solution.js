@@ -100,7 +100,7 @@ class Machine {
 
     out (modes) {
         const p = this.pointer;
-        this.outputs.push(this.getMem(p + 1, modes[0]));
+        this.outputs.unshift(this.getMem(p + 1, modes[0]));
         this.pointer += 2;
         return STATE.PAUSED;
     }
