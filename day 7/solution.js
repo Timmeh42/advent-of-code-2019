@@ -179,7 +179,7 @@ module.exports = function ( input ) {
 
     let part2 = -Infinity;
     for (let perm of permutations([...range(5, 5 + machineCount)])) {
-        let inputs = perm.map(n => [n]).concat([[]]);
+        let inputs = perm.map(n => [n]);
         let machines = [];
         for (let i = 0; i < machineCount; i++) {
             machines.push(new Machine(input.split(',').map(n => parseInt(n)), inputs[i], inputs[(i + 1) % machineCount]));
