@@ -1,5 +1,5 @@
 "use strict";
-const { permutations } = require('../helpers');
+const { permutations, range } = require('../helpers');
 
 const MODE = {
     POSITION: 0,
@@ -101,7 +101,7 @@ class Machine {
 
     out (modes) {
         const p = this.pointer;
-        this.outputs.push(this.getMem(p + 1, modes[0]));
+        this.outputs.unshift(this.getMem(p + 1, modes[0]));
         this.pointer += 2;
         return STATE.PAUSED;
     }
@@ -162,43 +162,52 @@ class Machine {
 
 module.exports = function ( input ) {
 
-    let maxx = -Infinity;
-    for (let perm of permutations([0, 1, 2, 3, 4])) {
-        let [Ai, Bi, Ci, Di, Ei, Eo] = [[0], [], [], [], [], []];
-        Ai.push(perm[0]);
-        let A = new Machine(input.split(',').map(n => parseInt(n)), Ai, Bi);
-        while (A.state !== STATE.PAUSED) {
-            A.run();
+    let part1 = -Infinity;
+    let machineCount = 5;
+    for (let perm of permutations([...range(machineCount)])) {
+        let inputs = Array(machineCount + 1).fill([]);
+        let machines = [];
+        for (let i = 0; i < machineCount; i++) {
+            machines.push(new Machine(input.split(',').map(n => parseInt(n)), inputs[i], inputs[i+1]));
         }
-        Bi.push(perm[1]);
-        let B = new Machine(input.split(',').map(n => parseInt(n)), Bi, Ci);
-        while (B.state !== STATE.PAUSED) {
-            B.run();
+        inputs[0].push(0);
+        for (let i = 0; i < machineCount; i++) {
+            inputs[i].push(perm[i]);
+            while (machines[i].state !== STATE.PAUSED) {
+                machines[i].run();
+            }
         }
-        Ci.push(perm[2]);
-        let C = new Machine(input.split(',').map(n => parseInt(n)), Ci, Di);
-        while (C.state !== STATE.PAUSED) {
-            C.run();
+        part1 = Math.max(part1, inputs[machineCount][0]);
+    }
+
+    let part2 = -Infinity;
+    for (let perm of permutations([...range(5, 5 + machineCount)])) {
+        let inputs = [];
+        for (let i = 0; i < machineCount; i++) {
+            inputs.push([]);
         }
-        Di.push(perm[3]);
-        let D = new Machine(input.split(',').map(n => parseInt(n)), Di, Ei);
-        while (D.state !== STATE.PAUSED) {
-            D.run();
+        let machines = [];
+        for (let i = 0; i < machineCount; i++) {
+            machines.push(new Machine(input.split(',').map(n => parseInt(n)), inputs[i], inputs[(i + 1) % machineCount]));
         }
-        Ei.push(perm[4]);
-        let E = new Machine(input.split(',').map(n => parseInt(n)), Ei, Eo);
-        while (E.state !== STATE.PAUSED) {
-            E.run();
+        inputs[0].push(0);
+        inputs.forEach((e, i) => e.push(perm[i]));
+        let i = 0;
+        while (true) {
+            machines[i].state = STATE.RUNNING;
+            while (machines[i].state === STATE.RUNNING) {
+                machines[i].run();
+            }
+            if (machines[machineCount - 1].state === STATE.COMPLETE) {
+                break;
+            }
+            i = (i + 1) % machineCount;
         }
-        maxx = Math.max(maxx, Eo[0]);
+        part2 = Math.max(part2, machines[machineCount - 1].outputs[0]);
     }
     
-
-
-
-
     return [
-        maxx,
-        '',
+        part1,
+        part2,
     ];
 }
