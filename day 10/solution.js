@@ -4,7 +4,7 @@ module.exports = function (input) {
     const width = input.match(/\r?\n/).index;
     let asteroids = Array.from(space.matchAll(/#/g), m => ({x: m.index % width, y: Math.floor(m.index / width)}));
 
-    let base = null;
+    let base = asteroids[0];
     for (let me of asteroids) {
         me.angles = new Map();
         for (let asteroid of asteroids) {
@@ -23,7 +23,7 @@ module.exports = function (input) {
                 asteroid,
             });
         }
-        if (base === null || base.angles.size < me.angles.size) {
+        if (base.angles.size < me.angles.size) {
             base = me;
         }
     }
@@ -47,16 +47,8 @@ module.exports = function (input) {
     const a200 = asteroidQueue[199].asteroid;
     const part2 = a200.x * 100 + a200.y;
 
-
-
     return [
         part1,
         part2,
     ]
 }
-
-/**
- * 1,2 and 2, 4
- * 1,2 -> 1, 2
- * 2,4 -> 1, 2
- */
