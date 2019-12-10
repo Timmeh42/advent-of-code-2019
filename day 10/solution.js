@@ -1,19 +1,8 @@
 "use strict"
 module.exports = function (input) {
-    const rows = input.split(/\r?\n/);
-    const width = rows[0].length;
-    const height = rows.length;
-    let asteroids = [];
-    for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-            if (rows[y][x] === '#') {
-                asteroids.push({
-                    x: x,
-                    y: y,
-                });
-            }
-        }
-    }
+    const space = input.replace(/\r?\n/g, '');
+    const width = input.match(/\r?\n/).index;
+    let asteroids = Array.from(space.matchAll(/#/g), m => ({x: m.index % width, y: Math.floor(m.index / width)}));
 
     let base = null;
     for (let me of asteroids) {
