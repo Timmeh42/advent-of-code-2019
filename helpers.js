@@ -28,3 +28,13 @@ exports.range = function* (a, b = a, s = null) {
 exports.permutations = function (a) {
     return a.length ? a.reduce((r, v, i) => [ ...r, ...exports.permutations([ ...a.slice(0, i), ...a.slice(i + 1) ]).map(x => [ v, ...x ])], []) : [[]];
 }
+
+exports.clamp = function (n, min, max) {
+    if (n < min) {
+        return min;
+    } else if (n > max) {
+        return max;
+    } else {
+        return n;
+    }
+}
